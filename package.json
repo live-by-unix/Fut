@@ -1,0 +1,83 @@
+{
+  "name": "fut",
+  "version": "1.0.0",
+  "description": "Fut — a fast, filesystem-based Markdown notes app built with Electron.",
+  "author": {
+    "name": "live-by-unix",
+    "email": "abhayscontact@gmail.com"
+  },
+  "license": "MIT",
+  "main": "src/main/index.js",
+  "homepage": "https://github.com/live-by-unix/Fut",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/live-by-unix/Fut.git"
+  },
+  "scripts": {
+    "postinstall": "node scripts/copy-assets.js",
+    "vendor": "node scripts/copy-assets.js",
+    "start": "npm run vendor && electron .",
+    "dev": "npm run vendor && electron . --dev",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "pack": "npm run vendor && electron-builder --dir",
+    "build": "npm run vendor && electron-builder -mwl",
+    "build:mac": "npm run vendor && electron-builder --mac",
+    "build:win": "npm run vendor && electron-builder --win",
+    "build:linux": "npm run vendor && electron-builder --linux"
+  },
+  "dependencies": {
+    "markdown-it": "14.1.0",
+    "prismjs": "1.29.0",
+    "split.js": "1.6.5"
+  },
+  "devDependencies": {
+    "electron": "31.7.7",
+    "electron-builder": "24.13.3",
+    "eslint": "8.57.1"
+  },
+  "build": {
+    "appId": "com.livebyunix.fut",
+    "productName": "Fut",
+    "copyright": "Copyright © 2026 live-by-unix",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "package.json",
+      "!**/*.map"
+    ],
+    "extraMetadata": {
+      "main": "src/main/index.js"
+    },
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        { "target": "dmg", "arch": ["x64", "arm64"] },
+        { "target": "zip", "arch": ["x64", "arm64"] }
+      ],
+      "icon": "build/icon.png"
+    },
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "linux": {
+      "target": ["AppImage", "deb", "rpm"],
+      "category": "Utility",
+      "maintainer": "live-by-unix <abhayscontact@gmail.com>",
+      "icon": "build/icon.png"
+    }
+  }
+}

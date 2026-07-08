@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data: https: file:; style-src 'self' 'unsafe-inline'; script-src 'self';"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fut</title>
+    <link rel="stylesheet" href="vendor/prism/prism-tomorrow.css" />
+    <link rel="stylesheet" href="styles/main.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="titlebar">
+        <div class="titlebar__brand">
+          <span class="titlebar__logo">Fut</span>
+          <span class="titlebar__tagline">Markdown notes, straight to disk</span>
+        </div>
+        <div class="titlebar__actions">
+          <button id="btn-new-note" class="btn btn--primary" title="Create a new note (Ctrl/Cmd+N)">
+            + New Note
+          </button>
+          <button id="btn-reveal" class="btn" title="Open the .futnotes folder">
+            Open Folder
+          </button>
+        </div>
+      </header>
+
+      <main class="workspace" id="workspace">
+        <!-- Sidebar: list of note cards -->
+        <section class="pane pane--sidebar" id="pane-sidebar">
+          <div class="sidebar__toolbar">
+            <input
+              id="search"
+              class="sidebar__search"
+              type="search"
+              placeholder="Search notes…"
+              autocomplete="off"
+              spellcheck="false"
+            />
+          </div>
+          <div class="sidebar__list" id="note-list" role="list"></div>
+          <div class="sidebar__empty" id="sidebar-empty" hidden>
+            <p>No notes yet.</p>
+            <p>Click <strong>+ New Note</strong> to get started.</p>
+          </div>
+        </section>
+
+        <!-- Center: markdown editor -->
+        <section class="pane pane--editor" id="pane-editor">
+          <div class="editor__header">
+            <input
+              id="note-title"
+              class="editor__title"
+              type="text"
+              placeholder="Note name"
+              spellcheck="false"
+              autocomplete="off"
+              disabled
+            />
+            <div class="editor__meta">
+              <span id="save-status" class="editor__status">Ready</span>
+              <button id="btn-delete" class="btn btn--danger" disabled title="Delete this note">
+                Delete
+              </button>
+            </div>
+          </div>
+          <textarea
+            id="editor"
+            class="editor__area"
+            placeholder="Select or create a note to start writing…"
+            spellcheck="true"
+            disabled
+          ></textarea>
+        </section>
+
+        <!-- Right: live preview -->
+        <section class="pane pane--preview" id="pane-preview">
+          <div class="preview__header">Preview</div>
+          <div class="preview__body markdown-body" id="preview">
+            <div class="preview__placeholder">
+              <h2>Welcome to Fut</h2>
+              <p>Your notes live as plain Markdown files in <code>~/.futnotes</code>.</p>
+              <ul>
+                <li>Create a note with <strong>+ New Note</strong>.</li>
+                <li>Everything you type autosaves instantly.</li>
+                <li>This pane renders your Markdown live.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Modal for note name input / rename confirmation -->
+    <div class="modal" id="modal" hidden>
+      <div class="modal__backdrop" data-modal-close></div>
+      <div class="modal__dialog" role="dialog" aria-modal="true">
+        <h3 class="modal__title" id="modal-title">New Note</h3>
+        <p class="modal__message" id="modal-message">Enter a name for your note (without .md).</p>
+        <input id="modal-input" class="modal__input" type="text" spellcheck="false" autocomplete="off" />
+        <p class="modal__error" id="modal-error" hidden></p>
+        <div class="modal__buttons">
+          <button id="modal-cancel" class="btn">Cancel</button>
+          <button id="modal-confirm" class="btn btn--primary">Create</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+
+    <!-- Vendor libraries (copied from node_modules by scripts/copy-assets.js) -->
+    <script src="vendor/markdown-it.min.js"></script>
+    <script src="vendor/split.min.js"></script>
+    <script src="vendor/prism/prism-bundle.js" data-manual></script>
+    <script src="js/markdown.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/modal.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/editor.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
