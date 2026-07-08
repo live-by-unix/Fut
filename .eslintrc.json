@@ -1,0 +1,32 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2022": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "script"
+  },
+  "extends": "eslint:recommended",
+  "globals": {
+    "markdownit": "readonly",
+    "Prism": "readonly",
+    "Split": "readonly",
+    "fut": "readonly",
+    "FutApi": "readonly",
+    "FutMarkdown": "readonly",
+    "FutSidebar": "readonly",
+    "FutEditor": "readonly",
+    "FutModal": "readonly",
+    "FutToast": "writable"
+  },
+  "rules": {
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    "no-console": "off",
+    "prefer-const": "warn",
+    "eqeqeq": ["error", "smart"]
+  },
+  "ignorePatterns": ["node_modules/", "dist/", "src/renderer/vendor/"]
+}
