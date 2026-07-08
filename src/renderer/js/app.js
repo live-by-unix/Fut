@@ -98,10 +98,21 @@
     }
   }
 
+  // The write itself happens on every keystroke; refreshing the sidebar
+  // (which re-reads the whole directory) is debounced so fast typing doesn't
+  // hammer the filesystem or cause card flicker.
+  let refreshTimer = null;
+  function scheduleListRefresh() {
+    if (refreshTimer) clearTimeout(refreshTimer);
+    refreshTimer = setTimeout(() => {
+      refreshTimer = null;
+      refreshList().catch(() => {});
+    }, 400);
+  }
+
   async function saveNote(name, content) {
     await api.write(name, content);
-    // Refresh the card's snippet/title/order without stealing focus.
-    await refreshList();
+    scheduleListRefresh();
   }
 
   async function renameNote(oldName, newName) {

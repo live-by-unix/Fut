@@ -5,8 +5,15 @@ const { app, BrowserWindow, Menu, shell } = require('electron');
 const { registerIpcHandlers } = require('./ipc');
 const { NotesManager } = require('./notesManager');
 
-const isDev = process.argv.includes('--dev') || !app.isPackaged;
+// DevTools only opens when explicitly requested with --dev, so a normal launch
+// stays free of the DevTools protocol console noise (e.g. Autofill.enable).
+const isDev = process.argv.includes('--dev');
 let mainWindow = null;
+
+// Software rendering is used on machines without a usable GPU (headless CI,
+// VMs, minimal Linux installs). Disabling hardware acceleration avoids noisy
+// GPU process initialisation failures and keeps rendering deterministic.
+app.disableHardwareAcceleration();
 
 function createWindow() {
   mainWindow = new BrowserWindow({
