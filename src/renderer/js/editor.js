@@ -11,11 +11,9 @@
   const statusEl = document.getElementById('save-status');
   const deleteBtn = document.getElementById('btn-delete');
 
-  const AUTOSAVE_DELAY = 250;
-
   let currentName = null;
-  let saveTimer = null;
-  let pendingContent = null;
+  let saving = false; // a write is currently in flight
+  let dirty = false; // content changed while a write was in flight
   let handlers = {
     onSave: async () => {},
     onRename: async () => {},
@@ -34,35 +32,36 @@
     deleteBtn.disabled = !enabled;
   }
 
+  // Serialised autosave: every keystroke triggers a write. If a write is still
+  // in flight, the newest content is coalesced and written immediately after,
+  // so the file always converges to exactly what is on screen with no debounce
+  // gap where edits could be lost.
   async function flush() {
-    if (saveTimer) {
-      clearTimeout(saveTimer);
-      saveTimer = null;
+    if (currentName == null || saving) {
+      if (currentName != null) dirty = true;
+      return;
     }
-    if (pendingContent == null || currentName == null) return;
-    const name = currentName;
-    const content = pendingContent;
-    pendingContent = null;
+    saving = true;
     try {
-      setStatus('Saving…');
-      await handlers.onSave(name, content);
+      do {
+        dirty = false;
+        const name = currentName;
+        const content = editorEl.value;
+        setStatus('Saving…');
+        // eslint-disable-next-line no-await-in-loop
+        await handlers.onSave(name, content);
+      } while (dirty && currentName != null);
       setStatus('Saved', 'ok');
     } catch (err) {
       setStatus('Save failed', 'error');
       global.FutToast && global.FutToast(`Save failed: ${err.message}`, 'error');
+    } finally {
+      saving = false;
     }
   }
 
-  function scheduleSave() {
-    if (currentName == null) return;
-    pendingContent = editorEl.value;
-    setStatus('Editing…');
-    if (saveTimer) clearTimeout(saveTimer);
-    saveTimer = setTimeout(flush, AUTOSAVE_DELAY);
-  }
-
   editorEl.addEventListener('input', () => {
-    scheduleSave();
+    flush();
     handlers.onInput(editorEl.value);
   });
 
@@ -116,9 +115,9 @@
     },
     clear() {
       currentName = null;
+      dirty = false;
       titleEl.value = '';
       editorEl.value = '';
-      pendingContent = null;
       setEnabled(false);
       setStatus('Ready');
     },
