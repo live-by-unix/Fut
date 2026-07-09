@@ -2,9 +2,7 @@
 A fast MarkDown editor built for speed and simplicity. This README covers installation, tech stack, licensing, and source code cloning.      
 
 ## Installation
-To install, go to the releases page, download the latest release, and install!          
-You will get a folder with multiple install options, choose the best for you. 
-
+**COMPILED VERSIONS & UPGRADED README COMING SOON**
 ## Tech Stack
 * Electron
 * Split.js
